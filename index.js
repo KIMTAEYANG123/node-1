@@ -4,10 +4,10 @@ const app = express()
 // 포트는자기가하고싶은거해도됨
 const port = 5000
 const bodyParser = require('body-parser');
-const config = require('./config/key')
-const {User} = require("./models/User");
+const config = require('./server/config/key')
+const {User} = require("./server/models/User");
 const cookieParser = require('cookie-parser');
-const {auth} = require('./middleware/auth');
+const {auth} = require('./server/middleware/auth');
 
 //application/x-www-form-urlencoded 데이터를 분석해서 가져올 수 있음 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -43,8 +43,9 @@ app.post('/api/users/register',(req,res)=>{
   });
 });
 
+app.get('/api/hello', (req,res)=> res.send('hello world ~'))
 
-app.post('/api/user/login',(req,res)=>{
+app.post('/api/users/login',(req,res)=>{
   //요청된 이메일을 데이터베이스에서 있는지 찾는다.
   User.findOne({email:req.body.email}, (err,userInfo)=>{
     if(!userInfo){
@@ -66,7 +67,7 @@ app.post('/api/user/login',(req,res)=>{
         // 토큰을 저장한다. 어디에 ? 쿠키 ,로컬스토리지 등에 저장할 수 있음
         res.cookie('x_auth',user.token)
         .status(200)
-        .json({loginSucess:true, userId: user._id}) 
+        .json({loginSuccess:true, userId: user._id}) 
       });
     });
   });
